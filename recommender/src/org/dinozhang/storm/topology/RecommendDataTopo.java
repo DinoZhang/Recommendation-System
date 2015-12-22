@@ -22,7 +22,7 @@ public class RecommendDataTopo {
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("movie-reader", new MovieReader());
         builder.setBolt("movie-spilter", new MovieSpliter()).shuffleGrouping("movie-reader");
-        builder.setBolt("MovieToMysql", new MovieToMysql()).shuffleGrouping("movie-spilter");
+        builder.setBolt("movieToMysql", new MovieToMysql()).shuffleGrouping("movie-spilter");
         //rating topo
         builder.setSpout("ratings-reader", new RatingsReader());
         builder.setBolt("ratings-spilter", new RatingsSpliter()).shuffleGrouping("ratings-reader");
