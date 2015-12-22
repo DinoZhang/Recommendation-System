@@ -41,49 +41,52 @@ public class MovieReader extends BaseRichSpout {
         //		Collection<File> files = FileUtils.listFiles(new File("D://test/"),
         //				FileFilterUtils.notFileFilter(FileFilterUtils
         //						.suffixFileFilter(".bak")), null);
-        for (File f : files) {
-            try {
+        if (files != null) {
+            for (File f : files) {
+                try {
 
-                List<String> lines = FileUtils.readLines(f, "UTF-8");
-                for (String line : lines) {
-                    String[] mo = line.split("::");
-                    String id = mo[0];
-                    String name = mo[1].substring(0, mo[1].lastIndexOf("(") - 1);
-                    String year = mo[1].substring(mo[1].lastIndexOf("(") + 1,
-                        mo[1].lastIndexOf(")"));
-                    /*List<String> type = new ArrayList<String>();
+                    List<String> lines = FileUtils.readLines(f, "UTF-8");
+                    for (String line : lines) {
+                        String[] mo = line.split("::");
+                        String id = mo[0];
+                        String name = mo[1].substring(0, mo[1].lastIndexOf("(") - 1);
+                        String year = mo[1].substring(mo[1].lastIndexOf("(") + 1,
+                            mo[1].lastIndexOf(")"));
+                        /*List<String> type = new ArrayList<String>();
+                        String[] t = mo[2].split("\\|");
+                        for (int i = 0; i < t.length; i++) {
+                        	type.add(t[i]);
+                        }*/
+                        StringBuffer type = new StringBuffer();
+                        String[] t = mo[2].split("\\|");
+                        for (int i = 0; i < t.length; i++) {
+                            type.append(t[i] + ",");
+                        }
+                        String hobby = type.substring(0, type.length() - 1);
+                        //System.out.print("123\n");
+                        System.out.print(id + name + year + hobby);
+                        collector.emit(new Values(id, name, year, hobby));
+                    }
+
+                    //String lines = "";
+                    /*String[] mo = f.split("::");
+                    String id=mo[0];
+                    String name=mo[1].substring(0, mo[1].lastIndexOf("(") - 1);
+                    String year=mo[1].substring(mo[1].lastIndexOf("(") + 1,
+                    		mo[1].lastIndexOf(")"));
+                    List<String> type = new ArrayList<String>();
                     String[] t = mo[2].split("\\|");
                     for (int i = 0; i < t.length; i++) {
                     	type.add(t[i]);
-                    }*/
-                    StringBuffer type = new StringBuffer();
-                    String[] t = mo[2].split("\\|");
-                    for (int i = 0; i < t.length; i++) {
-                        type.append(t[i] + ",");
                     }
-                    String hobby = type.substring(0, type.length() - 1);
-                    //System.out.print("123\n");
-                    System.out.print(id + name + year + hobby);
-                    collector.emit(new Values(id, name, year, hobby));
-                }
+                    System.out.print("123");
+                    System.out.print(id+name+year+type);*/
 
-                //String lines = "";
-                /*String[] mo = f.split("::");
-                String id=mo[0];
-                String name=mo[1].substring(0, mo[1].lastIndexOf("(") - 1);
-                String year=mo[1].substring(mo[1].lastIndexOf("(") + 1,
-                		mo[1].lastIndexOf(")"));
-                List<String> type = new ArrayList<String>();
-                String[] t = mo[2].split("\\|");
-                for (int i = 0; i < t.length; i++) {
-                	type.add(t[i]);
+                    FileUtils.moveFile(f, new File(f.getPath() + System.currentTimeMillis()
+                                                   + ".bak"));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                System.out.print("123");
-                System.out.print(id+name+year+type);*/
-
-                FileUtils.moveFile(f, new File(f.getPath() + System.currentTimeMillis() + ".bak"));
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

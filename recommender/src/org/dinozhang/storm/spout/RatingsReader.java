@@ -41,21 +41,24 @@ public class RatingsReader extends BaseRichSpout {
         //		Collection<File> files = FileUtils.listFiles(new File("D://test/"),
         //				FileFilterUtils.notFileFilter(FileFilterUtils
         //						.suffixFileFilter(".bak")), null);
-        for (File f : files) {
-            try {
+        if (files != null) {
+            for (File f : files) {
+                try {
 
-                List<String> lines = FileUtils.readLines(f, "UTF-8");
-                for (String line : lines) {
-                    String[] mo = line.split("::");
-                    String user_id = mo[0];
-                    String movie_id = mo[1];
-                    String ratting = mo[2];
-                    String timestamp = mo[3];
-                    collector.emit(new Values(user_id, movie_id, ratting, timestamp));
+                    List<String> lines = FileUtils.readLines(f, "UTF-8");
+                    for (String line : lines) {
+                        String[] mo = line.split("::");
+                        String user_id = mo[0];
+                        String movie_id = mo[1];
+                        String ratting = mo[2];
+                        String timestamp = mo[3];
+                        collector.emit(new Values(user_id, movie_id, ratting, timestamp));
+                    }
+                    FileUtils.moveFile(f, new File(f.getPath() + System.currentTimeMillis()
+                                                   + ".bak"));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                FileUtils.moveFile(f, new File(f.getPath() + System.currentTimeMillis() + ".bak"));
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
